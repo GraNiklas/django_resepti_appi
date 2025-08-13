@@ -1,0 +1,66 @@
+{% extends 'index.html' %}
+{% block content %}
+
+
+<div class="container mt-4">
+
+    
+    <h5>Reseptit</h5>
+    <a href="{% url 'uusi_resepti' %}" id="add-btn" class="btn btn-success btn-sm">Lisää uusi resepti</a>
+</div>
+
+<!-- <form method="post" action="/resepti-haku/">
+    {% csrf_token %}
+    <input class="card-text" type="text" placeholder="search" name="search" />
+    <input class="btn btn-success btn-sm"  type="submit" name="" />
+</form> -->
+<div class="container mt-4 ">
+    <div class="d-grid gap-4" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
+        {% for r in reseptit %}
+        <div class="card" style="display: flex;flex-direction: column;height: 100%;">
+            <div class="card-header">
+                <h1>
+                    {{r.nimi}}
+                </h1>
+            </div>
+                <div class="card-body" style="flex-grow: 1;">
+                    <h4>
+                        {{r.aika_minuuttia}} minuuttia
+                    </h4>
+                    <p>
+                        {{r.kuvaus}}
+                    </p>
+                    <br />
+                    <h4>Ainekset</h3>
+                    {% for a in r.ainekset.all %}
+                    <h6>
+                        {{a.aines}} ({{a.maara}} {{a.yksikko}})
+                    </h6>
+                    {% empty %}
+                    <h6>Ei aineksia</h6>
+                    {% endfor %}
+                    <br />
+                    <h4>Ohje</h3>
+                    <ol>
+                    {% for v in r.vaiheet.all %}
+                    <li>
+                        {{v.kuvaus}} ({{v.aika_minuuttia}} minuuttia)
+                    </li>
+                    {% empty %}
+                    <li>Ei vaiheita</li>
+                    {% endfor %}
+                    </ol>
+
+                </div>
+                <div class="card-footer d-flex gap-2 justify-content-end" >
+                    <a href="/muokkaa-resepti/{{r.id}}/" class="btn btn-warning btn-sm">Muokkaa</a>
+                    <a href="/poista-resepti/{{r.id}}/"  class="btn btn-danger btn-sm"
+                        onclick="return confirm('Oletko varma, että haluat poistaa tämän reseptin?');">
+                    Poista
+                    </a>
+                </div>
+            
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

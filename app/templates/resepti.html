@@ -1,0 +1,85 @@
+{% extends 'index.html' %}
+{% block content %}
+
+
+<div class="container mt-4 " style="max-width: 400px;">
+<form method="post" action="{% url 'tallenna_resepti' %}">
+    {% csrf_token %}
+    <input type="hidden" name="resepti_id" value="{{ resepti.id }}">
+    <div class="mb-3">
+        <label for="nimi" class="form-label">Nimi</label>
+        <input type="text" class="form-control" id="nimi" name="nimi" value="{{ resepti.nimi }}">
+    </div>
+
+    <div class="mb-3">
+        <label for="kuvaus" class="form-label">Kuvaus</label>
+        <textarea rows="4" class="form-control" id="kuvaus" name="kuvaus" >{{ resepti.kuvaus }}</textarea>
+    </div>
+
+    <h4>Ainekset</h4>
+    <div id="ainekset-container">
+        {% for a in resepti.ainekset.all %}
+        <div class="aines-row mb-2 d-flex gap-2 align-items-center">
+            <input type="text" class="form-control" name="aines_nimi[]" value="{{ a.aines }}" placeholder="Aines">
+            <input type="number" class="form-control" step="0.01" name="maara[]" value="{{ a.maara }}" placeholder="Määrä">
+            <input type="text" class="form-control" name="yksikko[]" value="{{ a.yksikko }}" placeholder="Yksikkö">
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Poista</button>
+        </div>
+        {% endfor %}
+    </div>
+    <button type="button" class="btn btn-secondary btn-sm mb-3" onclick="addAines()">Lisää aines</button>
+
+    <h4>Vaiheet</h4>
+    <div id="vaiheet-container">
+        {% for v in resepti.vaiheet.all %}
+        <div class="vaihe-row mb-2">
+            <label class="form-label">Kuvaus</label>
+            <textarea class="form-control mb-1" name="vaihe_kuvaus[]">{{ v.kuvaus }}</textarea>
+            <label class="form-label">Aika (min)</label>
+            <input type="number" class="form-control mb-1" name="vaihe_aika[]" value="{{ v.aika_minuuttia }}">
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Poista</button>
+        </div>
+        {% endfor %}
+    </div>
+    <button type="button" class="btn btn-secondary btn-sm mb-3" onclick="addVaihe()">Lisää vaihe</button>
+
+    <div class="mt-3">
+        <input type="submit" class="btn btn-success" value="Tallenna">
+        <a href="{% url 'reseptit' %}" class="btn btn-secondary">Peruuta</a>
+    </div>
+</form>
+</div>
+<script>
+function addAines() {
+    const container = document.getElementById('ainekset-container');
+    const newRow = document.createElement('div');
+    newRow.classList.add('aines-row', 'mb-2', 'd-flex', 'gap-2', 'align-items-center');
+    newRow.innerHTML = `
+        <input type="text" class="form-control" name="aines_nimi[]" placeholder="Aines">
+        <input type="number" class="form-control" step="0.01" name="maara[]" placeholder="Määrä">
+        <input type="text" class="form-control" name="yksikko[]" placeholder="Yksikkö">
+        <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Poista</button>
+    `;
+    container.appendChild(newRow);
+}
+
+function addVaihe() {
+    const container = document.getElementById('vaiheet-container');
+    const newRow = document.createElement('div');
+    newRow.classList.add('vaihe-row', 'mb-2');
+    newRow.innerHTML = `
+        <label class="form-label">Kuvaus</label>
+        <textarea class="form-control mb-1" name="vaihe_kuvaus[]" placeholder="Vaiheen kuvaus"></textarea>
+        <label class="form-label">Aika (min)</label>
+        <input type="number" class="form-control mb-1" name="vaihe_aika[]" placeholder="Aika (min)">
+        <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Poista</button>
+    `;
+    container.appendChild(newRow);
+}
+
+function removeRow(button) {
+    button.parentElement.remove();
+}
+</script>
+
+{% endblock %}

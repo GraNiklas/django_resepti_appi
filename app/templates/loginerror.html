@@ -1,0 +1,14 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+<div class="card shadow-sm" style="width: 100%; max-width: 400px;">
+        <div class="card-header">
+            <h5>Wrong credentials</h5>
+        </div>
+            <div class="card-body">
+                <input type="button" onclick="window.location.href='/'" id="hide-btn" class="btn btn-secondary btn-sm" value="Try again" />
+            </div>
+    </div>
+</div>
+</div>
+{% endblock %}
